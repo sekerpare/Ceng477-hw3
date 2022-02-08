@@ -96,6 +96,13 @@ public:
     void Configure_Buffers_World();
 
     pair<vector<float>, vector<unsigned int> > generateSphereVerticesAndIndices(float radius, int horizontalSplitCount, int verticalSplitCount, float startx , float starty ,float startz );
+
+    float angle         = PI * 0.5 / horizontalSplitCount;  
+    glm::mat4 I         = glm::mat4(1.0f);
+    glm::mat4 ModelMoon = glm::mat4(1.0f);
+    glm::mat4 ModelWorld= glm::mat4(1.0f);
+    glm::mat4 rotation  = glm::rotate(I , angle ,glm::vec3(0,0,1));
+    glm::mat4 rot_moon  = glm::rotate(I , angle ,glm::vec3(0,0,1));
     
 };
 

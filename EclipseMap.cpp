@@ -94,9 +94,7 @@ void EclipseMap::Update_camera(GLuint ID){
     GLint VM = glGetUniformLocation(ID, "ViewMatrix");
     glUniformMatrix4fv(VM,1,GL_FALSE, &newViewMatrix[0][0]);
     //MVP; //
-    glm::mat4 I( 1.0f );
-    glm::mat4 rotation= glm::rotate(I , 0.05f,glm::vec3(0,0,0));
-    glm::mat4 newMVP = newProjectionMatrix * newViewMatrix;// *rotation ;
+    glm::mat4 newMVP   = newProjectionMatrix * newViewMatrix ;//
     GLint MVPID = glGetUniformLocation(ID, "MVP");
     glUniformMatrix4fv(MVPID,1,GL_FALSE, &newMVP[0][0]);
     //NormalMatrix;
@@ -112,7 +110,7 @@ void EclipseMap::Update_uniform_variables(GLuint ID){
     //cameraPosition//
     GLint CP = glGetUniformLocation(ID, "cameraPosition");
     glUniform3fv(CP,1, &cameraPosition[0]);
-    //textureOffset; // BU NE ????????
+    //textureOffset; 
     GLint TO = glGetUniformLocation(ID, "textureOffset");
     glUniform1f(TO, textureOffset);
     //heightFactor;//
@@ -224,10 +222,9 @@ void EclipseMap::Render(const char *coloredTexturePath, const char *greyTextureP
         handleKeyPress(window);
 
         //* TODO: Manipulate rotation variables
-        //????? ??????????????????? TODO
-        glm::mat4 newNormalMatrix = glm::perspective(glm::radians(projectionAngle),aspectRatio,near,far);
-        GLint NM = glGetUniformLocation(worldShaderID, "NormalMatrix");
-        glUniformMatrix4fv(NM,1,GL_FALSE, &newNormalMatrix[0][0]);
+        ModelWorld = rotation * ModelWorld;
+        GLint WMM  = glGetUniformLocation(worldShaderID, "ModelMatrix");
+        glUniformMatrix4fv(WMM,1,GL_FALSE, &ModelWorld[0][0]);
         
         // TODO: Bind textures
         glActiveTexture(GL_TEXTURE0);
