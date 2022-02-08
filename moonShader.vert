@@ -40,7 +40,7 @@ void main()
    
     // set gl_Position variable correctly to give the transformed vertex position
     // compute normal vector
-    data.Position = vec3(ViewMatrix   * vec4(VertexPosition,1));
+    data.Position = vec3(ViewMatrix   * vec4(VertexPosition,1.0f));
     data.Normal   = vec3(normalize(vec3(NormalMatrix * vec4(VertexNormal  ,0))));
     data.TexCoord = vec2(VertexTex.x,VertexTex.y);
 

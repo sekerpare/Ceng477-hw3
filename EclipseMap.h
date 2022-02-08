@@ -11,7 +11,6 @@
 #include <GLFW/glfw3.h>
 #include <jpeglib.h>
 #include <GL/glew.h>
-#include "Sphere.h"
 
 #define PI 3.14159265359
 using namespace std;
@@ -95,6 +94,9 @@ public:
     void Configure_Buffers_Moon();
 
     void Configure_Buffers_World();
+
+    pair<vector<float>, vector<unsigned int> > generateSphereVerticesAndIndices(float radius, int horizontalSplitCount, int verticalSplitCount, float startx , float starty ,float startz );
+    
 };
 
 #endif

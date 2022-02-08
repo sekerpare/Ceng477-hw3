@@ -25,10 +25,66 @@ struct triangle {
                                                                            vertex3(vertex3) {}
 };
 
+pair<vector<float>, vector<unsigned int> > EclipseMap::generateSphereVerticesAndIndices(float radius, int horizontalSplitCount, int verticalSplitCount, float startx , float starty ,float startz )
+{
+    vector<float> vertices;
+    vector<unsigned int> indices;
+    unsigned int k1, k2;
+    
+    for(int vertical_step=0 ; vertical_step<=verticalSplitCount ; vertical_step++ ){
+        float beta = glm::pi<float>() * (float) vertical_step / (float) verticalSplitCount; //odev metninde verilmis
+        //bunlar indiceleri belirliyor
+        int p1 = vertical_step * (verticalSplitCount+1); //point 1 
+        int p2 = p1 + vertical_step+1; // point 2 
+        for(int horizontal_step=0 ; horizontal_step<=horizontalSplitCount ; horizontal_step++){
+            float alpha= 2 * glm::pi<float>() * (float) horizontal_step / (float) horizontalSplitCount;
+            float z = radius * cos(beta);
+            float y = radius * sin(beta) * sin(alpha);
+            float x = radius * sin(beta) * cos(alpha);
+            //once verticeleri pushluyorum
+            vertices.push_back(x);
+            vertices.push_back(y);
+            vertices.push_back(z);
+            //sonra normalleri pushluyorum
+            vertices.push_back(x/radius);
+            vertices.push_back(y/radius);
+            vertices.push_back(z/radius);
+            //sonra texture coordinateleri pushluyorum
+            vertices.push_back((float)horizontal_step/horizontalSplitCount);
+            vertices.push_back((float)vertical_step  /verticalSplitCount);
+
+        }
+    }
+    
+    for (int i = 0; i < verticalSplitCount; i++)
+    {
+        k1 = i * (horizontalSplitCount + 1);
+        k2 = k1 + horizontalSplitCount + 1;
+        for (int j = 0; j < horizontalSplitCount; j++)
+        {
+            if (i != 0)
+            {
+                indices.push_back(k1);
+                indices.push_back(k2);
+                indices.push_back(k1 + 1);
+            }
+            if (i != horizontalSplitCount - 1)
+            {
+                indices.push_back(k1 + 1);
+                indices.push_back(k2);
+                indices.push_back(k2 + 1);
+            }
+            k1++;
+            k2++;
+        }
+    }
+    return make_pair(vertices, indices);
+}
+
 void EclipseMap::Update_camera(GLuint ID){
     //ProjectionMatrix;
     //once matrixi bul
-    cameraPosition += cameraDirection * speed ;
+    cameraPosition += (cameraDirection * speed) ;
     glm::mat4 newProjectionMatrix = glm::perspective(glm::radians(projectionAngle),aspectRatio,near,far);
     //sonra shaderi updatele
     GLint PM = glGetUniformLocation(ID, "ProjectionMatrix");
@@ -38,7 +94,9 @@ void EclipseMap::Update_camera(GLuint ID){
     GLint VM = glGetUniformLocation(ID, "ViewMatrix");
     glUniformMatrix4fv(VM,1,GL_FALSE, &newViewMatrix[0][0]);
     //MVP; //
-    glm::mat4 newMVP = newProjectionMatrix * newViewMatrix;
+    glm::mat4 I( 1.0f );
+    glm::mat4 rotation= glm::rotate(I , 0.05f,glm::vec3(0,0,0));
+    glm::mat4 newMVP = newProjectionMatrix * newViewMatrix;// *rotation ;
     GLint MVPID = glGetUniformLocation(ID, "MVP");
     glUniformMatrix4fv(MVPID,1,GL_FALSE, &newMVP[0][0]);
     //NormalMatrix;
@@ -167,9 +225,9 @@ void EclipseMap::Render(const char *coloredTexturePath, const char *greyTextureP
 
         //* TODO: Manipulate rotation variables
         //????? ??????????????????? TODO
-        glPushMatrix();
-        glRotatef(PI*0.5/(float)horizontalSplitCount,1, 0, 0); 
-        glPopMatrix();
+        glm::mat4 newNormalMatrix = glm::perspective(glm::radians(projectionAngle),aspectRatio,near,far);
+        GLint NM = glGetUniformLocation(worldShaderID, "NormalMatrix");
+        glUniformMatrix4fv(NM,1,GL_FALSE, &newNormalMatrix[0][0]);
         
         // TODO: Bind textures
         glActiveTexture(GL_TEXTURE0);

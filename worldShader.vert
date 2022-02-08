@@ -38,12 +38,12 @@ void main()
     vec4 texColor = texture(TexGrey, textureCoordinate);
 
     // get texture value, compute height
-    vec3 height   = vec3(heightFactor * texColor.x * VertexNormal);//sadece red channeli ekleyin demis odevde
-    vec4 Position = vec4(VertexPosition.x, VertexPosition.y+height.y, VertexPosition.z , 1.0f);//homogeneous coordinate
+    vec3 height   = vec3(heightFactor * texColor.r * VertexNormal);//sadece red channeli ekleyin demis odevde
+    vec4 Position = vec4(VertexPosition+height , 1.0f);//homogeneous coordinate
 
     // compute normal vector
     data.Position = vec3(ViewMatrix   * Position);
-    data.Normal   = vec3(normalize(vec3(NormalMatrix * vec4(VertexNormal  ,1))));
+    data.Normal   = vec3(normalize(vec3(NormalMatrix * vec4(VertexNormal  ,1.0f))));
     data.TexCoord = vec2(VertexTex.x,VertexTex.y);
 
     // set gl_Position variable correctly to give the transformed vertex position
