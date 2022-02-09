@@ -87,7 +87,7 @@ void EclipseMap::Update_camera(GLuint ID){
     GLint PM = glGetUniformLocation(ID, "ProjectionMatrix");
     glUniformMatrix4fv(PM,1,GL_FALSE, &newProjectionMatrix[0][0]);
     //ViewMatrix;
-    glm::mat4 newViewMatrix = glm::lookAt(cameraPosition,cameraDirection,cameraUp);
+    glm::mat4 newViewMatrix = glm::lookAt(cameraPosition,cameraDirection+cameraPosition,cameraUp);
     GLint VM = glGetUniformLocation(ID, "ViewMatrix");
     glUniformMatrix4fv(VM,1,GL_FALSE, &newViewMatrix[0][0]);
     //MVP; //
@@ -314,25 +314,33 @@ void EclipseMap::handleKeyPress(GLFWwindow *window) {
     The camera will also move with some speed at every frame.*/
     else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS ) {
         //WRONG
+        pitch += 0.05;
         glm::vec3 left_vector = glm::normalize(glm::cross(cameraUp,cameraDirection));
-        cameraDirection = glm::normalize(glm::rotate(cameraDirection ,0.05f,left_vector));
-        //cameraUp = glm::normalize(glm::cross(cameraDirection,left_vector)) ;
+        glm::mat4 rot         = glm::rotate(I, 0.05f, left_vector);
+        cameraDirection       = rot * glm::vec4(cameraDirection,1.0f) ;
+        cameraUp = glm::normalize(glm::cross(cameraDirection,left_vector)) ;
     }
     else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS ) {
         //WRONG
+        pitch -= 0.05;
         glm::vec3 left_vector = glm::normalize(glm::cross(cameraUp,cameraDirection));
-        cameraDirection = glm::normalize(glm::rotate(cameraDirection ,-0.05f,left_vector));
-        //cameraUp = glm::normalize(glm::cross(cameraDirection,left_vector)) ;
+        glm::mat4 rot         = glm::rotate(I, -0.05f, left_vector);
+        cameraDirection       = rot * glm::vec4(cameraDirection,1.0f) ;
+        cameraUp = glm::normalize(glm::cross(cameraDirection,left_vector)) ;
     }
     //and change yaw with A and D keys 
     //A and D keys rotates the gaze around the up vector.
     else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS ) {
         //WRONG
-        cameraDirection = glm::normalize(glm::rotate(cameraDirection ,0.05f,cameraUp));
+        yaw += 0.05f;
+        glm::mat4 rot         = glm::rotate(I, 0.05f,cameraUp);
+        cameraDirection       = rot * glm::vec4(cameraDirection,1.0f) ;
     }
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS ) {
         //WRONG
-        cameraDirection = glm::normalize(glm::rotate(cameraDirection ,-0.05f,cameraUp));
+        yaw -= 0.05f;
+        glm::mat4 rot         = glm::rotate(I, -0.05f,cameraUp);
+        cameraDirection       = rot * glm::vec4(cameraDirection,1.0f) ;
     }
     else if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS ) {
         //DONE
