@@ -11,6 +11,7 @@ uniform mat4 ProjectionMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 NormalMatrix;
 uniform mat4 ModelMatrix;
+uniform mat4 SelfRotationMatrix;
 uniform mat4 MVP;
 
 uniform sampler2D TexColor;
@@ -41,8 +42,9 @@ void main()
    
     // set gl_Position variable correctly to give the transformed vertex position
     // compute normal vector
-    data.Position = vec3(MVP   * ModelMatrix * vec4(VertexPosition,1.0f));
-    data.Normal   = vec3(normalize(vec3(NormalMatrix * ModelMatrix *vec4(VertexNormal  ,0))));
+
+    data.Position = vec3(MVP   * ModelMatrix * vec4(VertexPosition,1.0f) * SelfRotationMatrix);
+    data.Normal   = vec3(normalize(vec3(NormalMatrix * ModelMatrix *vec4(VertexNormal  ,0) * SelfRotationMatrix)));
     data.TexCoord = vec2(VertexTex.x,VertexTex.y);
 
     // set gl_Position variable correctly to give the transformed vertex position

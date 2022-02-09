@@ -225,6 +225,10 @@ void EclipseMap::Render(const char *coloredTexturePath, const char *greyTextureP
         ModelMoon  = rot_moon * ModelMoon;
         GLint MMM  = glGetUniformLocation(moonShaderID, "ModelMatrix");
         glUniformMatrix4fv(MMM,1,GL_FALSE, &ModelMoon[0][0]);
+
+        SelfRot    = rotation * SelfRot;
+        GLint SRM  = glGetUniformLocation(moonShaderID, "SelfRotationMatrix");
+        glUniformMatrix4fv(SRM,1,GL_FALSE, &SelfRot[0][0]);
         
         // TODO: Bind textures
         glActiveTexture(GL_TEXTURE0);
