@@ -35,9 +35,9 @@ pair<vector<float>, vector<unsigned int> > EclipseMap::generateSphereVerticesAnd
         float beta = PI * (float) vertical_step / (float) verticalSplitCount; //odev metninde verilmis
         for(int horizontal_step=0 ; horizontal_step<=horizontalSplitCount ; horizontal_step++){
             float alpha= 2 * PI * (float) horizontal_step / (float) horizontalSplitCount;
-            float z = radius * cos(beta);
-            float y = radius * sin(beta) * sin(alpha);
-            float x = radius * sin(beta) * cos(alpha);
+            float z = radius * cosf(beta);
+            float y = radius * sinf(beta) * sinf(alpha);
+            float x = radius * sinf(beta) * cosf(alpha);
             //once verticeleri pushluyorum
             vertices.push_back(x+startx);
             vertices.push_back(y+starty);
@@ -234,7 +234,7 @@ void EclipseMap::Render(const char *coloredTexturePath, const char *greyTextureP
         glBindTexture(GL_TEXTURE_2D, textureGrey);
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, moonTextureColor);
-        
+
         // TODO: Use moonShaderID program
         glUseProgram(moonShaderID);
         
