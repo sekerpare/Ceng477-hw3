@@ -29,7 +29,7 @@ vec3 diffuseLightColor = vec3(1.0f);
 void main()
 {
     // Calculate texture coordinate based on data.TexCoord
-    vec2 textureCoordinate = data.TexCoord;
+    vec2 textureCoordinate = vec2(data.TexCoord.x+textureOffset , data.TexCoord.y);
     vec4 texColor = texture(MoonTexColor, textureCoordinate);
 
     

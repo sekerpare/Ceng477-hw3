@@ -10,6 +10,7 @@ uniform vec3 cameraPosition;
 uniform mat4 ProjectionMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 NormalMatrix;
+uniform mat4 ModelMatrix;
 uniform mat4 MVP;
 
 uniform sampler2D TexColor;
@@ -40,7 +41,7 @@ void main()
    
     // set gl_Position variable correctly to give the transformed vertex position
     // compute normal vector
-    data.Position = vec3(ViewMatrix   * vec4(VertexPosition,1.0f));
+    data.Position = vec3(MVP   * ModelMatrix * vec4(VertexPosition,1.0f));
     data.Normal   = vec3(normalize(vec3(NormalMatrix * vec4(VertexNormal  ,0))));
     data.TexCoord = vec2(VertexTex.x,VertexTex.y);
 
@@ -48,6 +49,6 @@ void main()
     CameraVector = normalize(vec3(cameraPosition - VertexPosition));//bunlari burada hesaplamam gerektigini dusundum. cunku frag kullaniyo
     LightVector  = normalize(vec3(lightPosition  - VertexPosition));
     //gl_Position = vec4(0,0,0,0); // this is a placeholder. It does not correctly set the position
-    gl_Position = MVP*vec4(VertexPosition,1);
+    gl_Position = MVP   * ModelMatrix * vec4(VertexPosition,1.0f);
 
 }
