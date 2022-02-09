@@ -97,8 +97,8 @@ public:
 
     pair<vector<float>, vector<unsigned int> > generateSphereVerticesAndIndices(float radius, int horizontalSplitCount, int verticalSplitCount, float startx , float starty ,float startz );
 
-    float angle         = PI * 0.5 / horizontalSplitCount;  
-    float angle_moon    = PI * 0.02 / 180 ;
+    float angle         = PI * 0.5  / horizontalSplitCount;  
+    float angle_moon    = 0.02 ;
     glm::mat4 I         = glm::mat4(1.0f);
     glm::mat4 ModelMoon = glm::mat4(1.0f);
     glm::mat4 ModelWorld= glm::mat4(1.0f);

@@ -39,12 +39,9 @@ pair<vector<float>, vector<unsigned int> > EclipseMap::generateSphereVerticesAnd
             float y = radius * sin(beta) * sin(alpha);
             float x = radius * sin(beta) * cos(alpha);
             //once verticeleri pushluyorum
-            x+=startx;
-            y+=starty;
-            z+=startz;
-            vertices.push_back(x);
-            vertices.push_back(y);
-            vertices.push_back(z);
+            vertices.push_back(x+startx);
+            vertices.push_back(y+starty);
+            vertices.push_back(z+startz);
             //sonra normalleri pushluyorum
             vertices.push_back(x/radius);
             vertices.push_back(y/radius);
@@ -226,7 +223,7 @@ void EclipseMap::Render(const char *coloredTexturePath, const char *greyTextureP
         GLint WMM  = glGetUniformLocation(worldShaderID, "ModelMatrix");
         glUniformMatrix4fv(WMM,1,GL_FALSE, &ModelWorld[0][0]);
 
-        ModelMoon = rot_moon * ModelMoon;
+        ModelMoon  = rot_moon * ModelMoon;
         GLint MMM  = glGetUniformLocation(moonShaderID, "ModelMatrix");
         glUniformMatrix4fv(MMM,1,GL_FALSE, &ModelMoon[0][0]);
         
@@ -235,6 +232,8 @@ void EclipseMap::Render(const char *coloredTexturePath, const char *greyTextureP
         glBindTexture(GL_TEXTURE_2D, textureColor);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textureGrey);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, moonTextureColor);
         
         // TODO: Use moonShaderID program
         glUseProgram(moonShaderID);
@@ -283,7 +282,7 @@ void EclipseMap::Render(const char *coloredTexturePath, const char *greyTextureP
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
    
-    //glDeleteProgram(moonShaderID);
+    glDeleteProgram(moonShaderID);
     glDeleteProgram(worldShaderID);
 
     // Close window
