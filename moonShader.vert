@@ -1,4 +1,4 @@
-#version 330
+#version 430
 
 layout (location = 0) in vec3 VertexPosition;
 layout (location = 1) in vec3 VertexNormal;
@@ -42,12 +42,12 @@ void main()
     // set gl_Position variable correctly to give the transformed vertex position
     // compute normal vector
     data.Position = vec3(MVP   * ModelMatrix * vec4(VertexPosition,1.0f));
-    data.Normal   = vec3(normalize(vec3(NormalMatrix * vec4(VertexNormal  ,0))));
+    data.Normal   = vec3(normalize(vec3(NormalMatrix * ModelMatrix *vec4(VertexNormal  ,0))));
     data.TexCoord = vec2(VertexTex.x,VertexTex.y);
 
     // set gl_Position variable correctly to give the transformed vertex position
-    CameraVector = normalize(vec3(cameraPosition - VertexPosition));//bunlari burada hesaplamam gerektigini dusundum. cunku frag kullaniyo
-    LightVector  = normalize(vec3(lightPosition  - VertexPosition));
+    CameraVector = normalize(vec3(cameraPosition - data.Position ));//bunlari burada hesaplamam gerektigini dusundum. cunku frag kullaniyo
+    LightVector  = normalize(vec3(lightPosition  - data.Position ));
     //gl_Position = vec4(0,0,0,0); // this is a placeholder. It does not correctly set the position
     gl_Position = MVP   * ModelMatrix * vec4(VertexPosition,1.0f);
 

@@ -218,11 +218,10 @@ void EclipseMap::Render(const char *coloredTexturePath, const char *greyTextureP
         // TODO: Handle key presses
         handleKeyPress(window);
 
-        //* TODO: Manipulate rotation variables
-        ModelWorld = rotation * ModelWorld;
-        GLint WMM  = glGetUniformLocation(worldShaderID, "ModelMatrix");
-        glUniformMatrix4fv(WMM,1,GL_FALSE, &ModelWorld[0][0]);
+        // TODO: Use moonShaderID program
+        glUseProgram(moonShaderID);
 
+        //* TODO: Manipulate rotation variables
         ModelMoon  = rot_moon * ModelMoon;
         GLint MMM  = glGetUniformLocation(moonShaderID, "ModelMatrix");
         glUniformMatrix4fv(MMM,1,GL_FALSE, &ModelMoon[0][0]);
@@ -235,9 +234,7 @@ void EclipseMap::Render(const char *coloredTexturePath, const char *greyTextureP
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, moonTextureColor);
 
-        // TODO: Use moonShaderID program
-        glUseProgram(moonShaderID);
-        
+    
         //* TODO: Update camera at every frame
         Update_camera(moonShaderID);
         
@@ -255,6 +252,10 @@ void EclipseMap::Render(const char *coloredTexturePath, const char *greyTextureP
         // TODO: Use worldShaderID program
         glUseProgram(worldShaderID);
         
+        ModelWorld = rotation * ModelWorld;
+        GLint WMM  = glGetUniformLocation(worldShaderID, "ModelMatrix");
+        glUniformMatrix4fv(WMM,1,GL_FALSE, &ModelWorld[0][0]);
+
         //* TODO: Update camera at every frame
         Update_camera(worldShaderID);
 
@@ -362,6 +363,24 @@ void EclipseMap::handleKeyPress(GLFWwindow *window) {
         // TODO
         //Window size is initially (1000, 1000) and it should be switched to full-screen mode with the key P. 
         //Besides, your program should support resizing window operation with the frame.
+        if(displayFormat == displayFormatOptions::fullScreen) {
+            GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+            screenWidth = defaultScreenWidth;
+            screenHeight = defaultScreenHeight;
+            glfwSetWindowMonitor(window, NULL, 1, 31, defaultScreenWidth, defaultScreenHeight, mode->refreshRate);
+            displayFormat = displayFormatOptions::windowed;
+        }
+        else {
+            GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+            
+            screenWidth = mode->width;
+            screenHeight= mode->height;
+            glfwSetWindowMonitor(window, monitor, 1, 31, mode->width, mode->height, mode->refreshRate);
+            displayFormat = displayFormatOptions::fullScreen;
+        }
+        aspectRatio = (float) screenWidth/(float) screenHeight;
     }
 
 }
