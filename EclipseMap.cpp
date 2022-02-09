@@ -295,9 +295,11 @@ void EclipseMap::handleKeyPress(GLFWwindow *window) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
     else if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS ) {
+        //DONE
         heightFactor += 10;
     }
     else if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS ) {
+        //DONE
         heightFactor -= 10;
     }
     /*You will implement a camera flight mode to be able to fly over the visualized terrain. The camera will have a gaze direction, which will be modeled by two angles for pitch and yaw.
