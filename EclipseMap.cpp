@@ -32,16 +32,16 @@ pair<vector<float>, vector<unsigned int> > EclipseMap::generateSphereVerticesAnd
     unsigned int k1, k2;
     
     for(int vertical_step=0 ; vertical_step<=verticalSplitCount ; vertical_step++ ){
-        float beta = glm::pi<float>() * (float) vertical_step / (float) verticalSplitCount; //odev metninde verilmis
-        //bunlar indiceleri belirliyor
-        int p1 = vertical_step * (verticalSplitCount+1); //point 1 
-        int p2 = p1 + vertical_step+1; // point 2 
+        float beta = PI * (float) vertical_step / (float) verticalSplitCount; //odev metninde verilmis
         for(int horizontal_step=0 ; horizontal_step<=horizontalSplitCount ; horizontal_step++){
-            float alpha= 2 * glm::pi<float>() * (float) horizontal_step / (float) horizontalSplitCount;
+            float alpha= 2 * PI * (float) horizontal_step / (float) horizontalSplitCount;
             float z = radius * cos(beta);
             float y = radius * sin(beta) * sin(alpha);
             float x = radius * sin(beta) * cos(alpha);
             //once verticeleri pushluyorum
+            x+=startx;
+            y+=starty;
+            z+=startz;
             vertices.push_back(x);
             vertices.push_back(y);
             vertices.push_back(z);
@@ -225,6 +225,10 @@ void EclipseMap::Render(const char *coloredTexturePath, const char *greyTextureP
         ModelWorld = rotation * ModelWorld;
         GLint WMM  = glGetUniformLocation(worldShaderID, "ModelMatrix");
         glUniformMatrix4fv(WMM,1,GL_FALSE, &ModelWorld[0][0]);
+
+        ModelMoon = rot_moon * ModelMoon;
+        GLint MMM  = glGetUniformLocation(moonShaderID, "ModelMatrix");
+        glUniformMatrix4fv(MMM,1,GL_FALSE, &ModelMoon[0][0]);
         
         // TODO: Bind textures
         glActiveTexture(GL_TEXTURE0);
@@ -256,7 +260,7 @@ void EclipseMap::Render(const char *coloredTexturePath, const char *greyTextureP
         Update_camera(worldShaderID);
 
         //* TODO: Update uniform variables at every frame
-        Update_uniform_variables(moonShaderID);
+        Update_uniform_variables(worldShaderID);
         
         // TODO: Bind world vertex array
         glBindVertexArray(VAO);
